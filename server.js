@@ -6,7 +6,7 @@ const app = express();
 
 
 
-app.use(router);
+app.use('/api',router);
 
 
 
