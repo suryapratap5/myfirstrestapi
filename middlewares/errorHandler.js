@@ -26,7 +26,7 @@ const errorHandler = (err, req, res, next  )=>{
         }
     }
 
-    return res.status(statusCode).json(data);
+    return res.status(statusCode).json({success : false , data});
 }
 
 
