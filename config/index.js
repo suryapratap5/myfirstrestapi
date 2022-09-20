@@ -8,6 +8,10 @@ export const {
 
     DB_URL,
 
-    SECRET_KEY
+    SECRET_KEY,
+    
+    REFRESH_KEY,
+
+    APP_URL
     
 } = process.env

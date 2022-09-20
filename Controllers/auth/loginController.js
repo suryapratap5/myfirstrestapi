@@ -3,6 +3,8 @@ import User from "../../models/User";
 import CustomErrorHandler from "../../Services/CustomErrorHandler";
 import bcrypt from 'bcrypt';
 import JwtService from "../../Services/JwtService";
+import RefreshToken from "../../models/refreshToken";
+import { REFRESH_KEY } from "../../config";
 
 const loginController = {
 
@@ -37,9 +39,14 @@ const loginController = {
             // token 
             const access_token = JwtService.sign({_id : user._id, role : user.role});
 
-            return res.json({success : true, access_token})
+          const refresh_token = JwtService.sign({_id : user._id, role : user.role}, '1y', REFRESH_KEY);
+
+        //   save refresh_token in database
+         await RefreshToken.create({token : refresh_token})
+
+            return res.json({success : true, access_token, refresh_token})
         } catch (err) {
-            
+            return next(err);
         }
 
 

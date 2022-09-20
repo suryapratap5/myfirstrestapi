@@ -3,6 +3,8 @@ import User from "../../models/User";
 import CustomErrorHandler from "../../Services/CustomErrorHandler";
 import bcrypt from 'bcrypt';
 import JwtService from "../../Services/JwtService";
+import { REFRESH_KEY } from "../../config";
+import RefreshToken from "../../models/refreshToken";
 
 const registerController ={
     
@@ -45,17 +47,25 @@ const registerController ={
 
         const user = new User({name , email, password : hashedPassword});
         let access_token;
+        let refresh_token
         try {
             const result = await user.save(user);
             // console.log(result);
 
             // Token
            access_token = JwtService.sign({_id : result._id, role : result.role});
+
+           refresh_token = JwtService.sign({_id : result._id, role : result.role}, '1y', REFRESH_KEY);
+
+           // save refresh_token in database
+           await RefreshToken.create({token : refresh_token});
+
+
         } catch (error) {
             return next(error)
         }
 
-        return res.json({success : true, access_token})
+        return res.json({success : true, access_token, refresh_token})
     }
 }
 
